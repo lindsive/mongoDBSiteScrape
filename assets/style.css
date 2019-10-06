@@ -1,0 +1,43 @@
+* {
+    box-sizing: border-box;
+}
+
+.navbar {
+    overflow: hidden;
+    background-color: #333;
+}
+
+.navbar a {
+    display: flex;
+    justify-content: flex-end;
+    color: #338CFF;
+    text-align: center;
+    padding: 1rem 1.25rem;
+    text-decoration: none;
+    font-size: 16px;
+}
+
+.navbar a:hover{
+    color: #225391;
+}
+
+@media screen and (max-width: 600px) {
+    .navbar a:not(:first-child) {display: none;}
+    .navbar a.icon {
+        display: flex;
+        justify-content: flex-end;
+    }
+  }
+
+  @media screen and (max-width: 600px) {
+    .navbar.responsive {position: relative;}
+    .navbar.responsive .icon {
+      position: absolute;
+      right: 0;
+      top: 0;
+    }
+    .navbar.responsive a {
+      display: flex;
+      text-align: left;
+    }
+  } 
