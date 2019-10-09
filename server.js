@@ -1,11 +1,12 @@
 const express = require("express");
-const mongoose  = require("mongoose");
+const mongoose = require("mongoose");
 const logger = require("morgan");
 const ejs = require("ejs");
 
 // Scraping tools
 const axios = require("axios");
 const cheerio = require("cheerio");
+
 
 // Require models
 let db = require("./models");
@@ -15,13 +16,17 @@ let PORT = process.env.PORT || 3000;
 const app = express();
 
 app.use(logger("dev"));
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({
+    extended: true
+}));
 app.use(express.json());
 app.use(express.static("public"));
 app.set("view engine", ejs);
 
 // connect to mongoose
-mongoose.connect("mongodb://localhost/news-scrape", { useNewUrlParser: true });
+mongoose.connect("mongodb://localhost/news-scrape", {
+    useNewUrlParser: true
+});
 let mongooseCheck = mongoose.connection;
 
 // check mongoose connection
@@ -32,17 +37,47 @@ mongooseCheck.once("open", () => {
 
 // routes
 app.get("/scrape", (req, res) => {
-    axios.get("https://www.nytimes.com/section/technology").then((response) => {
-        var $ = cheerio.load(response.data);
 
-        $("article div").each((i, element) => {
-            var result = {};
+    axios.get("https://old.reddit.com/").then((response) => {
+        let $ = cheerio.load(response.data);
 
-            result.title = $(this)
-            .children("h3", "h2", )
-        })
+        $("p.title").each((i, element) => {
+            let dataObj = {};
+
+            dataObj.title = $(this)
+                .children("a")
+                .text();
+
+            dataObj.link = $(this)
+                .children("a")
+                .text();
+
+            dataObj.summary = $(this)
+                .children("a")
+                .text();
+
+
+            db.Articles.create(dataObj)
+                .then((dbArticles) => {
+                    console.log(dbArticles);
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+        });
+        res.send("scrape complete");
+    });
+});
+
+app.get("/articles", (req, res) => {
+    db.Articles.find({})
+    .then((dbArticles) => {
+        res.json(dbArticles);
     })
-})
+    .catch((err) => {
+        res.json(err)
+    });
+});
 
 // listen for port
 app.listen(PORT, () => {

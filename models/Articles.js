@@ -4,11 +4,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const ArticlesSchema = new Schema({
-    headline: {
-        type: String,
-        required: true
-    },
-    byline: {
+    title: {
         type: String,
         required: true
     },
