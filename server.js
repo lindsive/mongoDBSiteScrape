@@ -35,6 +35,8 @@ mongooseCheck.once("open", () => {
 });
 
 // routes
+
+// scrape route
 app.get("/scrape", (req, res) => {
 
     axios.get("https://old.reddit.com/").then((response) => {
@@ -60,6 +62,7 @@ app.get("/scrape", (req, res) => {
     });
 });
 
+// get all articles from db
 app.get("/articles", (req, res) => {
     db.Articles.find({})
         .then((dbArticles) => {
@@ -67,6 +70,39 @@ app.get("/articles", (req, res) => {
         })
         .catch((err) => {
             res.json(err)
+        });
+});
+
+// route to get an article by id and populate it with its note
+app.get("/articles/:id", (req, res) => {
+    db.Articles.findOne({ _id: req.params.id })
+        .populate("note")
+        .then((dbArticles) => {
+            res.json(dbArticles);
+        });
+});
+
+// route to update/save an article's note
+app.post("/articles/:id", (req, res) => {
+    db.Note.create(req.body)
+        .then((dbNote) => {
+            return db.Articles.findOneAndUpdate(
+                {
+                    _id: req.params.id
+                },
+                {
+                    note: dbNote._id
+                },
+                {
+                    new: true
+                }
+            );
+        })
+        .then((dbArticles) => {
+            res.json(dbArticles);
+        })
+        .catch((err) => {
+            res.json(err);
         });
 });
 
