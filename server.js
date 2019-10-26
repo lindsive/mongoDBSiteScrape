@@ -7,7 +7,6 @@ const ejs = require("ejs");
 const axios = require("axios");
 const cheerio = require("cheerio");
 
-
 // Require models
 let db = require("./models");
 
@@ -44,18 +43,9 @@ app.get("/scrape", (req, res) => {
         $("p.title").each((i, element) => {
             let dataObj = {};
 
-            dataObj.title = $(this)
-                .children("a")
-                .text();
+            dataObj.title = $(element).text();
 
-            dataObj.link = $(this)
-                .children("a")
-                .text();
-
-            dataObj.summary = $(this)
-                .children("a")
-                .text();
-
+            dataObj.link = $(element).children().attr("href");
 
             db.Articles.create(dataObj)
                 .then((dbArticles) => {
@@ -66,17 +56,18 @@ app.get("/scrape", (req, res) => {
                 });
         });
         res.send("scrape complete");
+        console.log(dataObj);
     });
 });
 
 app.get("/articles", (req, res) => {
     db.Articles.find({})
-    .then((dbArticles) => {
-        res.json(dbArticles);
-    })
-    .catch((err) => {
-        res.json(err)
-    });
+        .then((dbArticles) => {
+            res.json(dbArticles);
+        })
+        .catch((err) => {
+            res.json(err)
+        });
 });
 
 // listen for port
