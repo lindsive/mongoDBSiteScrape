@@ -10,7 +10,7 @@ const cheerio = require("cheerio");
 // Require models
 let db = require("./models");
 
-let PORT = process.env.PORT || 3000;
+let PORT = 3000;
 
 const app = express();
 
@@ -19,20 +19,26 @@ app.use(express.urlencoded({
     extended: true
 }));
 app.use(express.json());
-app.use(express.static("public"));
+app.use(express.static("index.html"));
 app.set("view engine", ejs);
 
 // connect to mongoose
+// const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/news-scrape";
+
+// mongoose.connect(MONGODB_URI);
 mongoose.connect("mongodb://localhost/news-scrape", {
     useNewUrlParser: true
 });
-let mongooseCheck = mongoose.connection;
+// let mongooseCheck = mongoose.connection;
 
 // check mongoose connection
+let mongooseCheck = mongoose.connection;
 mongooseCheck.on("error", console.error.bind(console, "connection error: "));
 mongooseCheck.once("open", () => {
     console.log("connected to mongoose");
 });
+
+mongoose.connect("mongodb://localhost/unit18Populater", { useNewUrlParser: true })
 
 // routes
 

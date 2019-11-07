@@ -1,5 +1,5 @@
 // get articles as json
-$.getJSON("/articles", (data) => {
+$.getJSON("/", (data) => {
     for (let i = 0; i < data.length; i++) {
         $("#articles").append("<p data-id='" + data[i]._id + "'>" + data[i].title + "<br />" + data[i].link + "</p>");
     }
@@ -12,7 +12,7 @@ $(document).on("click", "p", () => {
 
     $.ajax({
         method: "GET",
-        url: "/articles/" + thisId
+        url: "/" + thisId
     })
     .then((data) => {
         console.log(data);
@@ -34,7 +34,7 @@ $.document.on("click", "#savenote", () => {
 
     $.ajax({
         method: "POST",
-        url: "/articles/" + thisId,
+        url: "/" + thisId,
         data: {
             title: $("titleinput").val(),
             body: $("#bodyinput").val()
